@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TechCare - Servicio Técnico con PDF/QR</title>
+  <style>
+    body{font-family:Arial, sans-serif; background:#f6f8fa; padding:20px;}
+    h2{color:#0b74de;}
+    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.05);max-width:500px;margin:auto;}
+    label{display:block;margin-top:10px;font-size:14px;color:#333;}
+    input,textarea,select{width:100%;padding:8px;border-radius:8px;border:1px solid #ddd;}
+    button{margin-top:14px;padding:10px 14px;background:#0b74de;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;}
+    canvas{display:block;margin:10px auto;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Registrar servicio y generar etiqueta QR</h2>
+    <form id="form">
+      <label>Cliente</label>
+      <input type="text" id="cliente" required>
+      <label>Contacto</label>
+      <input type="text" id="contacto" required>
+      <label>Equipo</label>
+      <select id="tipo">
+        <option value="Laptop">Laptop</option>
+        <option value="PC">PC</option>
+        <option value="Tablet">Tablet</option>
+      </select>
+      <label>Problema</label>
+      <textarea id="problema" required></textarea>
+      <button type="submit">Generar PDF</button>
+    </form>
+    <canvas id="qrCanvas"></canvas>
+  </div>
+
+  <!-- Librerías necesarias -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    const form = document.getElementById('form');
+    const qrCanvas = document.getElementById('qrCanvas');
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const cliente = document.getElementById('cliente').value.trim();
+      const contacto = document.getElementById('contacto').value.trim();
+      const tipo = document.getElementById('tipo').value;
+      const problema = document.getElementById('problema').value.trim();
+
+      // Crear un identificador único para la solicitud
+      const id = '_' + Math.random().toString(36).substr(2,9);
+      const link = `https://mi-servicio-techcare.com/solicitud/${id}`;
+
+      // Generar código QR
+      const qr = new QRious({ element: qrCanvas, value: link, size: 150 });
+
+      // Crear el PDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      pdf.setFontSize(16);
+      pdf.text('TechCare - Etiqueta de Servicio', 20, 20);
+      pdf.setFontSize(12);
+      pdf.text(`ID: ${id}`, 20, 35);
+      pdf.text(`Cliente: ${cliente}`, 20, 45);
+      pdf.text(`Contacto: ${contacto}`, 20, 55);
+      pdf.text(`Equipo: ${tipo}`, 20, 65);
+      pdf.text(`Problema: ${problema.substring(0,60)}${problema.length>60?'...':''}`, 20, 75);
+      // Insertar QR en PDF
+      const qrImg = qrCanvas.toDataURL('image/png');
+      pdf.addImage(qrImg, 'PNG', 140, 35, 50, 50);
+
+      // Guardar PDF
+      pdf.save(`etiqueta_${cliente.replace(/\\s+/g,'_')}.pdf`);
+    });
+  </script>
+</body>
+</html>
