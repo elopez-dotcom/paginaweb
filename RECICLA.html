@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EcoCalc - Reciclaje Electrónico</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- jsPDF y qrious -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>EcoCalc ♻️ - Reciclaje de Computadoras y Celulares</h1>
+    <p>Calcula el impacto y genera tu etiqueta para la campaña.</p>
+  </header>
+
+  <main>
+    <section class="formulario">
+      <label>Tipo de dispositivo
+        <select id="tipo">
+          <option value="laptop">Laptop</option>
+          <option value="desktop">Computadora de escritorio</option>
+          <option value="celular">Celular</option>
+          <option value="tablet">Tablet</option>
+        </select>
+      </label>
+      <label>Estado
+        <select id="estado">
+          <option value="funciona">Funciona</option>
+          <option value="reparacion">Reparación</option>
+          <option value="no_funciona">No funciona</option>
+        </select>
+      </label>
+      <label>Peso (kg)
+        <input type="number" id="peso" min="0" step="0.1" placeholder="Ej. 2.5">
+      </label>
+      <label>Batería incluida
+        <select id="bateria">
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </label>
+      <button id="calcularBtn">Calcular impacto</button>
+    </section>
+
+    <section class="resultado" id="resultado"></section>
+
+    <section class="registro" id="registro">
+      <h2>Registro de dispositivos</h2>
+      <ul id="lista"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Proyecto escolar — Reciclaje Electrónico.</p>
+  </footer>
+  <canvas id="qrCanvas" hidden></canvas>
+  <script src="script.js"></script>
+</body>
+</html>
